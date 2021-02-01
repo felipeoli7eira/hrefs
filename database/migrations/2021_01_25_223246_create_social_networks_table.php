@@ -16,10 +16,10 @@ class CreateSocialNetworksTable extends Migration
         Schema::create('social_networks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->string('facebook')->nullable()->default('null');
-            $table->string('instagram')->nullable()->default('null');
-            $table->string('linkedin')->nullable()->default('null');
-            $table->string('youtube')->nullable()->default('null');
+            $table->string('facebook')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('linkedin')->nullable();
+            $table->string('youtube')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });

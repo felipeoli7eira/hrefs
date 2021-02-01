@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User as UserModel;
 use Illuminate\Support\Facades\Hash;
+use Exception;
 
 class User extends Controller
 {
@@ -39,7 +40,7 @@ class User extends Controller
                 200
             );
         }
-        catch (\Exception $exception)
+        catch (Exception $exception)
         {
             return response()->json(
                 [
