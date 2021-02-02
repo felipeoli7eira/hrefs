@@ -47,10 +47,10 @@ class SocialNetwork extends Controller
     public function create(Request $request)
     {
         if (
+            $request->has('user_id') &&
             $request->has('facebook') ||
             $request->has('instagram') ||
-            $request->has('linkedin') &&
-            $request->has('user_id')
+            $request->has('linkedin')
         )
         {
             try
@@ -60,7 +60,7 @@ class SocialNetwork extends Controller
                 $success = [
                     'error'   => false,
                     'status'  => $this->httpStatus['Created'],
-                    'message' => 'Created',
+                    'message' => $resource,
                     'data'    => null
                 ];
 
@@ -83,7 +83,7 @@ class SocialNetwork extends Controller
             $badRequest = [
                 'error'   => true,
                 'status'  => $this->httpStatus['BadRequest'],
-                'message' => 'Nenhum dado informado para cadastro. Informa ao menos uma rede social (instagram, facebook ou linkedin)',
+                'message' => 'UID não informado e(ou) dados insuficientes',
                 'data'    => null
             ];
 
