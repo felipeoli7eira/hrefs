@@ -9,52 +9,71 @@ use Exception;
 
 class User extends Controller
 {
+    private $httpStatus = [
+        'Ok'         => 200,
+        'Created'    => 201,
+        'BadRequest' => 400,
+        'NotFound'   => 404,
+        'InternalServerError' => 500
+    ];
+
     public function index()
     {
-        $users = UserModel::all();
+        try
+        {
+            $resource = UserModel::all();
 
-        return response()->json(
-            [
+            $success = [
                 'error'   => false,
-                'status'  => 200,
-                'message' => 'lista de recursos',
-                'data'    => $users,
-            ],
-            200
-        );
+                'status'  => $this->httpStatus['Ok'],
+                'message' => 'selecteds',
+                'data'    => $resource
+            ];
+
+            return response($success, $this->httpStatus['Ok']);
+        }
+        catch (Exception $exception)
+        {
+            $error = [
+                'error'   => true,
+                'status'  => $this->httpStatus['InternalServerError'],
+                'message' => $exception->getMessage(),
+                'data'    => null
+            ];
+
+            return response($error, $this->httpStatus['Ok']);
+        }
     }
 
     public function find(int $id)
     {
         try
         {
-            $find = UserModel::find($id);
+            $resource = UserModel::find($id);
 
-            return response()->json(
-                [
-                    'error'   => false,
-                    'status'  => 200,
-                    'message' => 'Busca realizada',
-                    'data'    => $find
-                ],
-                200
-            );
+            $success = [
+                'error'   => false,
+                'status'  => $this->httpStatus['Ok'],
+                'message' => 'selected by id',
+                'data'    => $resource
+            ];
+    
+            return response($success, $this->httpStatus['Ok']);
         }
         catch (Exception $exception)
         {
-            return response()->json(
-                [
-                    'error'   => true,
-                    'status'  => 400,
-                    'message' => 'Erro na busca',
-                    'data'    => $exception
-                ],
-                400
-            );
+            $error = [
+                'error'   => true,
+                'status'  => $this->httpStatus['NotFound'],
+                'message' => $exception->getMessage(),
+                'data'    => $resource
+            ];
+    
+            return response($error, $this->httpStatus['Ok']);
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request) 
     {
         if ($request->has(['email', 'password']))
         {
@@ -62,81 +81,79 @@ class User extends Controller
             {
                 $user = UserModel::create(
                     [
-                        'fullname' => $request->input('fullname', 'null'),
-                        'username' => $request->input('username', 'null'),
-                        'photo'    => $request->input('photo', 'null'),
-                        'bio'      => $request->input('bio', 'null'),
-                        'email'    => $request->input('email'),
-                        'password' => Hash::make(
-                            $request->input('password')
-                        ), // Hash::check('plain-text', $hashedPassword)
+                        'profile_name'  => $request->input('profile_name'),
+                        'user_name'     => $request->input('username'),
+                        'photo'         => $request->input('photo'),
+                        'bio'           => $request->input('bio'),
+                        'phone'         => $request->input('phone'),
+                        'whatsapp'      => $request->input('whatsapp'),
+                        'email'         => $request->input('email'),
+                        'password'      => Hash::make(
+                            $request->input('password') # Hash::check('plain-text', $hashedPassword)
+                        ),
                     ]
                 );
+
+                $success = [
+                    'error'   => false,
+                    'status'  => $this->httpStatus['Created'],
+                    'message' => 'Created',
+                    'data'    => $user,
+                ];
         
-                return response()->json(
-                    [
-                        'error'   => false,
-                        'status'  => 201,
-                        'message' => 'registro efetuado',
-                        'data'    => $user->id
-                    ],
-                    201
-                );
+                return response($success, $this->httpStatus['Created']);
             }
-            catch (\Exception $exception)
+            catch (Exception $exception)
             {
-                return response()->json(
-                    [
-                        'error'   => true,
-                        'status'  => 400,
-                        'message' => 'erro ao registrar',
-                        'data'    => (int) $exception->getCode()
-                    ],
-                    400
-                );
+                $error = [
+                    'error'   => true,
+                    'status'  => $this->httpStatus['InternalServerError'],
+                    'message' => $exception->getMessage(),
+                    'data'    => null,
+                ];
+        
+                return response($error, $this->httpStatus['InternalServerError']);
             }
         }
         else
         {
-            return response()->json(
-                [
-                    'error'   => true,
-                    'status'  => 400,
-                    'message' => 'Dados insuficientes para registro! Informe ao menos um email e senha.',
-                    'data'    => null
-                ],
-                400
-            );
+
+            $badRequest = [
+                'error'   => true,
+                'status'  => $this->httpStatus['BadRequest'],
+                'message' => 'Dados insuficientes para registro! Informe ao menos um email e senha',
+                'data'    => null
+            ];
+
+            return response($badRequest, $this->httpStatus['BadRequest']);
         }
     }
 
-    public function update(Request $request, int $paramID)
+    public function update(Request $request, int $id)
     {
         try
         {
-            $update = UserModel::where('id', $paramID)->update($request->all());
+            $update = UserModel::where('id', $id)->update($request->all());
 
-            return response()->json(
-                [
-                    'error'   => false,
-                    'status'  => 200,
-                    'message' => 'Operação concluída',
-                    'data'    => $update,
-                ],
-                200
-            );
+            $success = [
+                'error'   => false,
+                'status'  => $this->httpStatus['Ok'],
+                'message' => 'Updated',
+                'data'    => $update,
+            ];
+
+            return response($success, $this->httpStatus['Ok']);
         }
-        catch (\Exception $exception)
+        catch (Exception $exception)
         {
-            return response()->json(
-                [
-                    'error'   => true,
-                    'status'  => 500,
-                    'message' => 'Ops! algo deu errado',
-                    'data'    => $exception,
-                ],
-                500
-            );
+            $error = [
+                'error'   => true,
+                'status'  => $this->httpStatus['InternalServerError'],
+                'message' => $exception->getMessage(),
+                'data'    => null,
+            ];
+
+            return response($error, $this->httpStatus['InternalServerError']);
         }
     }
 
@@ -144,29 +161,27 @@ class User extends Controller
     {
         try
         {
-            $delete = UserModel::where('id', $id)->delete();
+            $resource = UserModel::where('id', $id)->delete();
 
-            return response()->json(
-                [
-                    'error' => false,
-                    'status' => 200,
-                    'message' => 'Operação concluída',
-                    'data' => $delete
-                ],
-                200
-            );
+            $success = [
+                'error'   => false,
+                'status'  => $this->httpStatus['Ok'],
+                'message' => 'Deleted',
+                'data'    => null
+            ];
+
+            return response($success, $this->httpStatus['Ok']);
         }
-        catch (\Exception $exception)
+        catch (Exception $exception)
         {
-            return response()->json(
-                [
-                    'error' => true,
-                    'status' => 500,
-                    'message' => 'Operação concluída',
-                    'data' => $delete
-                ],
-                500
-            );
+            $error = [
+                'error'   => true,
+                'status'  => $this->httpStatus['InternalServerError'],
+                'message' => $exception->getMessage(),
+                'data'    => null
+            ];
+
+            return response($error, $this->httpStatus['InternalServerError']);
         }
     }
 }
