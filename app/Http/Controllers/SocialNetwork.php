@@ -44,6 +44,34 @@ class SocialNetwork extends Controller
         }
     }
 
+    public function find(int $id)
+    {
+        try
+        {
+            $resource = UserSocialNetwork::where('id', $id)->get();
+
+            $success = [
+                'error'   => false,
+                'status'  => $this->httpStatus['Ok'],
+                'message' => 'Selected',
+                'data'    => $resource
+            ];
+
+            return response($success, $this->httpStatus['Ok']);
+        }
+        catch (Exception $exception)
+        {
+            $error = [
+                'error'   => true,
+                'status'  => $this->httpStatus['InternalServerError'],
+                'message' => $exception->getMessage(),
+                'data'    => null
+            ];
+
+            return response($error, $this->httpStatus['InternalServerError']);
+        }
+    }
+
     public function create(Request $request)
     {
         if (
