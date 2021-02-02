@@ -118,4 +118,46 @@ class SocialNetwork extends Controller
             return response($badRequest, $this->httpStatus['BadRequest']);
         }
     }
+
+    public function update(Request $request, int $id)
+    {
+        if ($request->has('user_id') && $request->has('facebook') || $request->has('instagram') || $request->has('linkedin'))
+        {
+            try
+            {
+                $resource = UserSocialNetwork::where('id', $id)->update($request->all());
+
+                $success = [
+                    'error'   => false,
+                    'status'  => $this->httpStatus['Ok'],
+                    'message' => 'Updated',
+                    'data'    => $resource
+                ];
+
+                return response($success, $this->httpStatus['Ok']);
+            }
+            catch (Exception $exception)
+            {
+                $error = [
+                    'error'   => true,
+                    'status'  => $this->httpStatus['InternalServerError'],
+                    'message' => $exception->getMessage(),
+                    'data'    => null
+                ];
+    
+                return response($error, $this->httpStatus['InternalServerError']);
+            }
+        }
+        else
+        {
+            $badRequest = [
+                'error'   => true,
+                'status'  => $this->httpStatus['BadRequest'],
+                'message' => 'Nada informado para atualização',
+                'data'    => null
+            ];
+
+            return response($badRequest, $this->httpStatus['BadRequest']);
+        }
+    }
 }
