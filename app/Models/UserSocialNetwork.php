@@ -9,7 +9,7 @@ class UserSocialNetwork extends Model
 {
     use HasFactory;
 
-    protected $table = 'socialnetworks';
+    protected $table = 'social_networks';
 
     protected $fillable = [
         'user_id',
