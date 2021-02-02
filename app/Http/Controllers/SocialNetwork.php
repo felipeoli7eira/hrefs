@@ -160,4 +160,32 @@ class SocialNetwork extends Controller
             return response($badRequest, $this->httpStatus['BadRequest']);
         }
     }
+
+    public function delete(int $id)
+    {
+        try
+        {
+            $resource = UserSocialNetwork::where('id', $id)->delete();
+
+            $success = [
+                'error'   => false,
+                'status'  => $this->httpStatus['Ok'],
+                'message' => 'Deleted',
+                'data'    => $resource
+            ];
+
+            return response($success, $this->httpStatus['Ok']);
+        }
+        catch (Exception $exception)
+        {
+            $error = [
+                'error'   => true,
+                'status'  => $this->httpStatus['InternalServerError'],
+                'message' => $exception->getMessage(),
+                'data'    => null
+            ];
+
+            return response($error, $this->httpStatus['InternalServerError']);
+        }
+    }
 }
