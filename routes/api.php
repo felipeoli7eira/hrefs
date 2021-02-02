@@ -15,3 +15,4 @@ Route::delete('/user/{id}', [User::class, 'delete'])->whereNumber('id');
 
 
 Route::get('/user/socialnetworks', [SocialNetwork::class, 'index']);
+Route::post('/user/socialnetwork', [SocialNetwork::class, 'create']);
