@@ -34,7 +34,7 @@ Route::delete('user/hyperlinks/{id}', [HyperLink::class, 'delete'])->whereNumber
 
 
 
-Route::post('/login', [Auth::class, 'login']);  
+Route::post('/login', [Auth::class, 'login']);
 
 
 
