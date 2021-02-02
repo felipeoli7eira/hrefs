@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Exception;
 use App\Models\UserHyperLink;
-use App\Models\UserSocialNetwork;
 
 class HyperLink extends Controller
 {
@@ -49,7 +48,7 @@ class HyperLink extends Controller
     {
         try
         {
-            $resource = UserHyperLink::where('id', $id)->get();
+            $resource = UserHyperLink::where('user_id', $id)->get();
 
             $success = [
                 'error'   => false,
@@ -157,11 +156,13 @@ class HyperLink extends Controller
         }
     }
 
-    public function delete(int $id)
+    public function delete(Request $request, int $id)
     {
         try
         {
-            $resource = UserSocialNetwork::where('id', $id)->delete();
+            $resource = UserHyperLink::where('id', $id)
+            ->where('user_id', $request->input('user_id'))
+            ->delete();
 
             $success = [
                 'error'   => false,

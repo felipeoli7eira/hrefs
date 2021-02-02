@@ -28,6 +28,7 @@ Route::get('user/hyperlinks',      [HyperLink::class, 'index']);
 Route::get('user/hyperlinks/{id}', [HyperLink::class, 'find'])->whereNumber('id');
 Route::post('user/hyperlinks',     [HyperLink::class, 'create']);
 Route::put('user/hyperlinks/{id}', [HyperLink::class, 'update'])->whereNumber('id');
+Route::delete('user/hyperlinks/{id}', [HyperLink::class, 'delete'])->whereNumber('id');
 
 
 
