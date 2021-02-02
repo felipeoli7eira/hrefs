@@ -19,3 +19,20 @@ Route::get('/user/socialnetworks/{id}',     [SocialNetwork::class, 'find'])->whe
 Route::post('/user/socialnetwork',          [SocialNetwork::class, 'create']);
 Route::put('/user/socialnetwork/{id}',      [SocialNetwork::class, 'update'])->whereNumber('id');
 Route::delete('/user/socialnetworks/{id}',  [SocialNetwork::class, 'delete'])->whereNumber('id');
+
+
+
+
+Route::fallback(function($request)
+{
+    return response(
+        [
+            'error' => true,
+            'data' => $request,
+            'message' => 'InternalServerError',
+            'status' => 500
+        ],
+
+        500
+    );
+});
