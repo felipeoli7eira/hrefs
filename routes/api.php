@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User;
 use App\Http\Controllers\SocialNetwork;
 use App\Http\Controllers\HyperLink;
+use App\Http\Controllers\Auth;
 
 Route::get('/users',        [User::class, 'index']);
 Route::get('/user/{id}',    [User::class, 'find'])->whereNumber('id');
@@ -29,6 +30,11 @@ Route::get('user/hyperlinks/{id}', [HyperLink::class, 'find'])->whereNumber('id'
 Route::post('user/hyperlinks',     [HyperLink::class, 'create']);
 Route::put('user/hyperlinks/{id}', [HyperLink::class, 'update'])->whereNumber('id');
 Route::delete('user/hyperlinks/{id}', [HyperLink::class, 'delete'])->whereNumber('id');
+
+
+
+
+Route::post('/login', [Auth::class, 'login']);  
 
 
 
