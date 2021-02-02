@@ -24,8 +24,10 @@ Route::delete('/user/socialnetworks/{id}',  [SocialNetwork::class, 'delete'])->w
 
 
 
-Route::get('user/hyperlinks', [HyperLink::class, 'index']);
-Route::post('user/hyperlinks', [HyperLink::class, 'create']);
+Route::get('user/hyperlinks',      [HyperLink::class, 'index']);
+Route::get('user/hyperlinks/{id}', [HyperLink::class, 'find'])->whereNumber('id');
+Route::post('user/hyperlinks',     [HyperLink::class, 'create']);
+Route::put('user/hyperlinks/{id}', [HyperLink::class, 'update'])->whereNumber('id');
 
 
 

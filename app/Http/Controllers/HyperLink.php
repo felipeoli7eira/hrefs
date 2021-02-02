@@ -49,7 +49,7 @@ class HyperLink extends Controller
     {
         try
         {
-            $resource = UserSocialNetwork::where('id', $id)->get();
+            $resource = UserHyperLink::where('id', $id)->get();
 
             $success = [
                 'error'   => false,
@@ -117,11 +117,11 @@ class HyperLink extends Controller
 
     public function update(Request $request, int $id)
     {
-        if ($request->has('user_id') && $request->has('facebook') || $request->has('instagram') || $request->has('linkedin'))
+        if ($request->has('label') && $request->has('ref'))
         {
             try
             {
-                $resource = UserSocialNetwork::where('id', $id)->update($request->all());
+                $resource = UserHyperLink::where('id', $id)->update($request->all());
 
                 $success = [
                     'error'   => false,
