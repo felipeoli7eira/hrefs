@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\User;
 use App\Http\Controllers\SocialNetwork;
+use App\Http\Controllers\HyperLink;
 
 Route::get('/users',        [User::class, 'index']);
 Route::get('/user/{id}',    [User::class, 'find'])->whereNumber('id');
@@ -19,6 +20,12 @@ Route::get('/user/socialnetworks/{id}',     [SocialNetwork::class, 'find'])->whe
 Route::post('/user/socialnetwork',          [SocialNetwork::class, 'create']);
 Route::put('/user/socialnetwork/{id}',      [SocialNetwork::class, 'update'])->whereNumber('id');
 Route::delete('/user/socialnetworks/{id}',  [SocialNetwork::class, 'delete'])->whereNumber('id');
+
+
+
+
+Route::get('user/hyperlinks', [HyperLink::class, 'index']);
+Route::post('user/hyperlinks', [HyperLink::class, 'create']);
 
 
 
