@@ -15,8 +15,6 @@ class Auth extends Controller
         {
             try
             {
-                // $userPassword = Hash::make();
-
                 $user = User::where('email', $request->input('email'))->get()->first();
 
                 if ($user)
@@ -42,7 +40,7 @@ class Auth extends Controller
                             [
                                 'error'   => true,
                                 'status'  => 200,
-                                'message' => 'invalid password',
+                                'message' => 'Senha incorreta',
                                 'data'    => null
                             ],
 
@@ -56,11 +54,11 @@ class Auth extends Controller
                         [
                             'error'   => true,
                             'status'  => 404,
-                            'message' => 'Registro não encontrado',
+                            'message' => 'Usuário não encontrado para o e-mail informado',
                             'data'    => null
                         ],
     
-                        404
+                        200
                     );
                 }
             }
@@ -74,7 +72,7 @@ class Auth extends Controller
                         'data'    => null
                     ],
 
-                    500
+                    200
                 );
             }
         }
@@ -83,7 +81,7 @@ class Auth extends Controller
             $badRequest = [
                 'error'   => true,
                 'status'  => 400,
-                'message' => 'Email e senha não informados',
+                'message' => 'Dados não infomados para autenticação! Informe e-mail e senha.',
                 'data'    => null
             ];
             return response($badRequest, 400);
