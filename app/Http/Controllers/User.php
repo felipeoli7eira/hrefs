@@ -75,49 +75,8 @@ class User extends Controller
 
     public function store(Request $request) 
     {
-        if ($request->has(['email', 'password']))
+        if (! $request->has(['email', 'password']))
         {
-            try
-            {
-                $user = UserModel::create(
-                    [
-                        'profile_name'  => $request->input('profile_name'),
-                        'user_name'     => $request->input('username'),
-                        'photo'         => $request->input('photo'),
-                        'bio'           => $request->input('bio'),
-                        'phone'         => $request->input('phone'),
-                        'whatsapp'      => $request->input('whatsapp'),
-                        'email'         => $request->input('email'),
-                        'password'      => Hash::make(
-                            $request->input('password') # Hash::check('plain-text', $hashedPassword)
-                        ),
-                    ]
-                );
-
-                $success = [
-                    'error'   => false,
-                    'status'  => $this->httpStatus['Created'],
-                    'message' => 'Created',
-                    'data'    => $user,
-                ];
-        
-                return response($success, $this->httpStatus['Created']);
-            }
-            catch (Exception $exception)
-            {
-                $error = [
-                    'error'   => true,
-                    'status'  => $this->httpStatus['InternalServerError'],
-                    'message' => $exception->getMessage(),
-                    'data'    => null,
-                ];
-        
-                return response($error, $this->httpStatus['InternalServerError']);
-            }
-        }
-        else
-        {
-
             $badRequest = [
                 'error'   => true,
                 'status'  => $this->httpStatus['BadRequest'],
@@ -125,7 +84,75 @@ class User extends Controller
                 'data'    => null
             ];
 
-            return response($badRequest, $this->httpStatus['BadRequest']);
+            return response($badRequest, $this->httpStatus['Ok']);
+        }
+
+        if (!filter_var($request->input('email'), FILTER_VALIDATE_EMAIL))
+        {
+            $badRequest = [
+                'error'   => true,
+                'status'  => $this->httpStatus['BadRequest'],
+                'message' => 'Formato inválido para o email',
+                'data'    => null
+            ];
+
+            return response($badRequest, $this->httpStatus['Ok']);
+        }
+
+        if (UserModel::where('email', $request->input('email'))->count() )
+        {
+            $badRequest = [
+                'error'   => true,
+                'status'  => $this->httpStatus['Ok'],
+                'message' => 'Uma conta foi encontrada com esse e-mail, tente recupera-la',
+                'data'    => null
+            ];
+
+            return response($badRequest, $this->httpStatus['Ok']);
+        }
+
+        if (!mb_strlen($request->input('password')) >= 3 )
+        {
+            $badRequest = [
+                'error'   => true,
+                'status'  => $this->httpStatus['BadRequest'],
+                'message' => 'Escolha uma senha maior ou igual a 3 caracteres! (' . mb_strlen($request->input('password')) . ' atualmente)',
+                'data'    => null
+            ];
+
+            return response($badRequest, $this->httpStatus['Ok']);
+        }
+
+        try
+        {
+            $user = UserModel::create(
+                [
+                    'email'         => $request->input('email'),
+                    'password'      => Hash::make(
+                        $request->input('password') # Hash::check('plain-text', $hashedPassword)
+                    ),
+                ]
+            );
+
+            $success = [
+                'error'   => false,
+                'status'  => $this->httpStatus['Created'],
+                'message' => 'Conta criada',
+                'data'    => $user,
+            ];
+    
+            return response($success, $this->httpStatus['Created']);
+        }
+        catch (Exception $exception)
+        {
+            $error = [
+                'error'   => true,
+                'status'  => $this->httpStatus['InternalServerError'],
+                'message' => $exception->getMessage(),
+                'data'    => null,
+            ];
+    
+            return response($error, $this->httpStatus['Ok']);
         }
     }
 
